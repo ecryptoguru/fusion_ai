@@ -1,0 +1,30 @@
+{
+  "name": "decentralized-ai-marketplace",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"No frontend tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@reown/appkit": "latest",
+    "wagmi": "latest",
+    "viem": "latest",
+    "ipfs-http-client": "latest",
+    "lucide-react": "latest",
+    "class-variance-authority": "latest",
+    "clsx": "latest",
+    "tailwind-merge": "latest",
+    "next-intl": "latest"
+  },
+  "devDependencies": {
+    "hardhat": "^2.22.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "dotenv": "^16.3.1"
+  }
+}

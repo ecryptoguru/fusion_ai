@@ -1,0 +1,10 @@
+Manual Test Scenarios for Decentralized AI Marketplace
+
+1. Connect wallet, stake 10 FAI on Base Sepolia.
+2. Upload model (e.g., 'Test Model', 0.01 AVAX, 3 copies, 0.005 AVAX/month) on Avalanche Fuji.
+3. Buy 2 copies (check discount), subscribe, report.
+4. Try payments with/without 10 FAI staked.
+5. Browse/filter models by chain, copies, subscriptions.
+6. Report model and check flagging.
+7. Switch between chains and test UI warnings.
+8. Check dashboard and analytics.
