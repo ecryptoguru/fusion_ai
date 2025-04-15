@@ -129,6 +129,34 @@ contract Marketplace is ReentrancyGuard {
     }
 
     /**
+     * @notice Renew a subscription for a model (native token payment, 10% discount if 10 FAI staked on Base)
+     * @dev Discount eligibility must be checked off-chain or by oracle (not enforceable on-chain cross-chain)
+     * @param modelId Model to renew subscription for
+     * @param discountEligible true if user is eligible for discount (must be validated off-chain)
+     */
+    function renewSubscription(uint256 modelId, bool discountEligible) external payable nonReentrant {
+        Model storage m = models[modelId];
+        require(m.subPrice > 0, "No subscription available");
+        uint256 price = m.subPrice;
+        if (discountEligible) {
+            price = (price * (100 - DISCOUNT_PERCENT)) / 100;
+        }
+        require(msg.value == price, "Incorrect payment");
+        uint256 currentExpiry = subscriptions[modelId][msg.sender];
+        if (currentExpiry < block.timestamp) {
+            // Subscription expired, start new period
+            subscriptions[modelId][msg.sender] = block.timestamp + m.subDuration;
+        } else {
+            // Extend current subscription
+            subscriptions[modelId][msg.sender] = currentExpiry + m.subDuration;
+        }
+        uint256 fee = (msg.value * FEE_PERCENT) / 100;
+        (bool sent, ) = m.developer.call{value: msg.value - fee}("");
+        require(sent, "Payment failed");
+        emit ModelSubscribed(modelId, msg.sender);
+    }
+
+    /**
      * @notice Rate a model (1-5) if purchased or subscribed
      */
     function rateModel(uint256 modelId, uint8 rating) external {
@@ -148,5 +176,19 @@ contract Marketplace is ReentrancyGuard {
      */
     function reportModel(uint256 modelId) external {
         emit ModelReported(modelId, msg.sender);
+    }
+
+    /**
+     * @notice Returns true if the user has purchased the model
+     */
+    function hasPurchased(address user, uint256 modelId) public view returns (bool) {
+        return purchases[modelId][user];
+    }
+
+    /**
+     * @notice Returns true if the user is currently subscribed to the model
+     */
+    function isSubscribed(address user, uint256 modelId) public view returns (bool) {
+        return subscriptions[modelId][user] > block.timestamp;
     }
 }
